@@ -14,11 +14,12 @@ aligner.substitution_matrix = substitution_matrices.load("BLOSUM62")
 
 ### Define Functions
 
-def mutation_count(alignment):
-    """Takes Biopython Alignment Object in a pandas Dataframe, splits into strings and counts mismatches"""
-    count = 0
-    wt_seq = format(alignment[0]).split("\n")[0]
-    gl_seq = format(alignment[0]).split("\n")[2]
+def new_mutation_count(alignment):
+    """Takes Biopython Alignment Object in a pandas Dataframe, splits into strings and counts mismatches
+        Function version 1.1"""
+    count = 0 
+    wt_seq = format(alignment).split("\n")[0]
+    gl_seq = format(alignment).split("\n")[2]
     for element, value in enumerate(wt_seq):
         if value != gl_seq[element]:
             count += 1
@@ -37,28 +38,6 @@ def mutation_identifier(alignment):
         pass
     else:
         return mismatches
-
-
-def pd_aligner(df, seq1, seq2, name):
-    """Function that creates alignment object in pandas dataframe using Biopython Align
-        Input: Pandas Dataframe, Columnname Seq1, Columnname Seq2, Columnname of alignment
-        Output: Alignment object stored in a new dataframe column"""
-    for index in df.index:
-        df.loc[index, name] = aligner.align(df.loc[index, seq1], df.loc[index, seq2])
-    return df
-
-
-
-def new_mutation_count(alignment):
-    """Takes Biopython Alignment Object in a pandas Dataframe, splits into strings and counts mismatches
-        Function version 1.1"""
-    count = 0 
-    wt_seq = format(alignment).split("\n")[0]
-    gl_seq = format(alignment).split("\n")[2]
-    for element, value in enumerate(wt_seq):
-        if value != gl_seq[element]:
-            count += 1
-    return count
 
 
 def pd_aligner(df, seq1, seq2, name):
