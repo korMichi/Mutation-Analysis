@@ -14,14 +14,21 @@ def write_sequences(file_name, sequences, column_sequence_name):
     f.close()
 
 
-def get_v_gen_groups(df, germline_genes ,column_v_gen_name, column_sequence_name):
+def get_v_gen_groups(df, germline_genes ,column_v_gen_name, column_sequence_name, switch):
     """Identifies groups of sequences (e.g. v-gen) depending on column name and passes dataframe of groups to write_alignment()
-       Inputs: dataframe, name_of_columns_with_group, name_of_column_with_sequence"""
+       Inputs: dataframe, name_of_columns_with_group, name_of_column_with_sequence, switch"""
     v_gen_list = df[column_v_gen_name].unique()
     reduced_df = df[[column_v_gen_name, column_sequence_name]].copy().rename(columns={"V-Gene": "gene", column_sequence_name: "sequence"})
     for v_gen in v_gen_list:
-        result_frame = pd.concat([reduced_df.loc[df[column_v_gen_name] == v_gen], germline_genes.loc[germline_genes["gene"] == v_gen]])
-        write_sequences(v_gen, result_frame, "sequence") 
+        if switch == "yes":
+            result_frame = pd.concat([reduced_df.loc[df[column_v_gen_name] == v_gen], germline_genes.loc[germline_genes["gene"] == v_gen]])
+            write_sequences(v_gen, result_frame, "sequence") 
+        elif switch == "no":
+            result_frame = reduced_df.loc[df[column_v_gen_name] == v_gen]
+            write_sequences(v_gen, result_frame, "sequence") 
+        elif switch == "forgot":
+            print("Please add if you would like to include the V-Gen!")
+            break
 
 
 def muscle_alignment(path):
@@ -47,6 +54,6 @@ if __name__ == "__main__":
     germline_genes = pd.read_excel("Germline_Genes_AA.xlsx") # Read in database file of aminoacid sequences from germline genes
     germline_genes.index = germline_genes["gene"]
 
-    get_v_gen_groups(seq_df, germline_genes, "", "")
+    get_v_gen_groups(seq_df, germline_genes, "", "") # Include if you would like to include the germline genes as a sequence into the file
     path_to_files = ""
     muscle_alignment(path_to_files)
