@@ -18,7 +18,7 @@ def get_v_gen_groups(df, germline_genes ,column_v_gen_name, column_sequence_name
     """Identifies groups of sequences (e.g. v-gen) depending on column name and passes dataframe of groups to write_alignment()
        Inputs: dataframe, name_of_columns_with_group, name_of_column_with_sequence"""
     v_gen_list = df[column_v_gen_name].unique()
-    reduced_df = df[[column_v_gen_name, column_sequence_name]].copy().rename(columns={"V-Gene": "gene", "WT_HC_seq_aa": "sequence"})
+    reduced_df = df[[column_v_gen_name, column_sequence_name]].copy().rename(columns={"V-Gene": "gene", column_sequence_name: "sequence"})
     for v_gen in v_gen_list:
         result_frame = pd.concat([reduced_df.loc[df[column_v_gen_name] == v_gen], germline_genes.loc[germline_genes["gene"] == v_gen]])
         write_sequences(v_gen, result_frame, "sequence") 
