@@ -14,14 +14,13 @@ def write_sequences(file_name, sequences, column_sequence_name):
     f.close()
 
 
-def get_v_gen_groups(df, germline_genes ,column_v_gen_name, column_sequence_name, switch):
-    """Identifies groups of sequences (e.g. v-gen) depending on column name and passes dataframe of groups to write_alignment()
-       Inputs: dataframe, name_of_columns_with_group, name_of_column_with_sequence, switch"""
+def get_v_gen_groups(df, germline_genes, column_v_gen_name, column_sequence_name, switch="forgot"):
     v_gen_list = df[column_v_gen_name].unique()
     reduced_df = df[[column_v_gen_name, column_sequence_name]].copy().rename(columns={"V-Gene": "gene", column_sequence_name: "sequence"})
     for v_gen in v_gen_list:
         if switch == "yes":
-            result_frame = pd.concat([reduced_df.loc[df[column_v_gen_name] == v_gen], germline_genes.loc[germline_genes["gene"] == v_gen]])
+            for_groups = df.loc[df["V-Gen-Group"] == v_gen, "V-Gene"].unique() # must be commented out if germline genes not included
+            result_frame = pd.concat([reduced_df.loc[df[column_v_gen_name] == v_gen], germline_genes.loc[germline_genes["gene"] == (for_groups[0] + "*01")]]) #for_groups[0] if with germline gene or str(v_gen) if without
             write_sequences(v_gen, result_frame, "sequence") 
         elif switch == "no":
             result_frame = reduced_df.loc[df[column_v_gen_name] == v_gen]
