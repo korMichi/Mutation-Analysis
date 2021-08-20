@@ -50,6 +50,7 @@ def muscle_alignment(path):
 
 if __name__ == "__main__":
     seq_df = pd.read_excel("", index_col=0)
+#    seq_df = seq_df.loc[~seq_df.index.str.contains("HC")] # if only heavy chain or light chain is used in the grouped analysis
     germline_genes = pd.read_excel("Germline_Genes_AA.xlsx") # Read in database file of aminoacid sequences from germline genes
     germline_genes.index = germline_genes["gene"]
 
